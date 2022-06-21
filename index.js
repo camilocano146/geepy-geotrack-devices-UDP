@@ -28,57 +28,66 @@ app.use(express.static('public'));
 // server http
 const server = http.createServer(app);
 
+// servers UDP
+var serverUDP = dgram.createSocket("udp4", () => {
+	console.log("server in port 50000 was create");
+});
+
 // Catching the message event
-server.on("message", (msg, rinfo) => {
+serverUDP.on("message", (msg, rinfo) => {
 
-	console.log("-----------start server.message-----------");
-
-	// Displaying the client message
-	console.log("Message in 50000 port: ");
-	console.log(msg);
+	console.log("-----------start serverUDP.message-----------");
 
 	// Displaying the client address
-	console.log("IP: " + rinfo.address + "\n");
+	console.log("Message from IP: " + rinfo.address + "\n");
+
+	// Displaying the client message
+	console.log(msg + "");
 
 	// Exiting process
 	process.exit();
 
-	console.log("-----------end server.message-----------");
+	console.log("-----------end serverUDP.message----------- \n");
 
 });
 
 // Catching the listening event
-server.on('listening', () => {
-	console.log("-----------start server.listening-----------");
+serverUDP.on('listening', () => {
+
+	console.log("-----------start serverUDP.listening-----------");
 
 	// Getting address information
 	// for the server
-	const address = server.address();
+	const address = serverUDP.address();
 
 	// Display the result
-	console.log(`Server UDP listening in: ${address.port}`);
-	console.log("-----------ends server.listening-----------");
-
+	console.log(`Server UDP listening in port: ${address.port}`);
+	console.log("-----------end serverUDP.listening----------- \n");
 
 });
 
 // Binding server with port address
 // by using bind() method
-server.bind(50000, () => {
+serverUDP.bind(50000, () => {
 
+
+	console.log("-----------start serverUDP.bind-----------");
 	// Setting the Send buffer size
 	// by using setSendBufferSize() method
-	server.setSendBufferSize(2000);
+	serverUDP.setSendBufferSize(2000);
 
 	// Getting the Send buffer size
 	// by using getSendBufferSize() method
-	const size = server.getSendBufferSize();
+	const size = serverUDP.getSendBufferSize();
 
 	// Display the result
-	console.log(size);
+	console.log("Buffer size: " + size);
+	console.log("-----------end serverUDP.listening----------- \n");
 });
 
 server.listen(port, function() {
+	console.log("-----------start server.listen-----------");
     console.log('Server API HTTP listening in: ' + port);
+	console.log("-----------end server.listen-----------\n");
 });
 
