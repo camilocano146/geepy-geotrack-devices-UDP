@@ -37,10 +37,13 @@ var server4100 = dgram.createSocket("udp4", () => {
 });
 
 // Catching the message event
-server50000.on("message", function (msg) {
+server50000.on("message", (msg, rinfo) => {
 
 	// Displaying the client message
-	process.stdout.write("UDP String in 50000 port: " + msg + "\n");
+	console.log("UDP String in 50000 port: " + msg + "\n");
+
+	// Displaying the client address
+	console.log("IP: " + rinfo.address + "\n");
 
 	// Exiting process
 	process.exit();
@@ -52,6 +55,9 @@ server4100.on("message", function (msg) {
 
 	// Displaying the client message
 	process.stdout.write("UDP String in 4100 port: " + msg + "\n");
+
+	// Displaying the client address
+	console.log("IP: " + rinfo.address + "\n");
 
 	// Exiting process
 	process.exit();
@@ -116,6 +122,6 @@ server4100.bind(4100, () => {
 
 
 server.listen(port, function() {
-    console.log('Servidor API HTTP en: ' + port);
+    console.log('Server API HTTP en: ' + port);
 });
 
