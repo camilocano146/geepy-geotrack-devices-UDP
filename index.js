@@ -28,19 +28,14 @@ app.use(express.static('public'));
 // server http
 const server = http.createServer(app);
 
-// servers UDP
-var server50000 = dgram.createSocket("udp4", () => {
-	console.log("server in port 50000 is created");
-});
-var server4100 = dgram.createSocket("udp4", () => {
-	console.log("server in port 50000 is created");
-});
-
 // Catching the message event
-server50000.on("message", (msg, rinfo) => {
+server.on("message", (msg, rinfo) => {
+
+	console.log("-----------start server.message-----------");
 
 	// Displaying the client message
-	console.log("UDP String in 50000 port: " + msg + "\n");
+	console.log("Message in 50000 port: ");
+	console.log(msg);
 
 	// Displaying the client address
 	console.log("IP: " + rinfo.address + "\n");
@@ -48,80 +43,42 @@ server50000.on("message", (msg, rinfo) => {
 	// Exiting process
 	process.exit();
 
-});
-
-// Catching the message event
-server4100.on("message", function (msg) {
-
-	// Displaying the client message
-	process.stdout.write("UDP String in 4100 port: " + msg + "\n");
-
-	// Displaying the client address
-	console.log("IP: " + rinfo.address + "\n");
-
-	// Exiting process
-	process.exit();
+	console.log("-----------end server.message-----------");
 
 });
 
 // Catching the listening event
-server50000.on('listening', () => {
+server.on('listening', () => {
+	console.log("-----------start server.listening-----------");
 
 	// Getting address information
 	// for the server
-	const address = server50000.address();
+	const address = server.address();
 
 	// Display the result
-	console.log(`server listening ${address.address}:${address.port}`);
+	console.log(`Server UDP listening in: ${address.port}`);
+	console.log("-----------ends server.listening-----------");
 
-});
-
-// Catching the listening event
-server4100.on('listening', () => {
-
-	// Getting address information
-	// for the server
-	const address = server4100.address();
-
-	// Display the result
-	console.log(`server listening ${address.address}:${address.port}`);
 
 });
 
 // Binding server with port address
 // by using bind() method
-server50000.bind(50000, () => {
+server.bind(50000, () => {
 
 	// Setting the Send buffer size
 	// by using setSendBufferSize() method
-	server50000.setSendBufferSize(2000);
+	server.setSendBufferSize(2000);
 
 	// Getting the Send buffer size
 	// by using getSendBufferSize() method
-	const size = server50000.getSendBufferSize();
+	const size = server.getSendBufferSize();
 
 	// Display the result
 	console.log(size);
 });
-// Binding server with port address
-// by using bind() method
-server4100.bind(4100, () => {
-
-	// Setting the Send buffer size
-	// by using setSendBufferSize() method
-	server4100.setSendBufferSize(2000);
-
-	// Getting the Send buffer size
-	// by using getSendBufferSize() method
-	const size = server4100.getSendBufferSize();
-
-	// Display the result
-	console.log(size);
-});
-
-
 
 server.listen(port, function() {
-    console.log('Server API HTTP en: ' + port);
+    console.log('Server API HTTP listening in: ' + port);
 });
 
