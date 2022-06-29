@@ -34,15 +34,14 @@ var serverUDP = dgram.createSocket("udp4", () => {
 });
 
 // Catching the message event
-serverUDP.on("message", (msg, rinfo) => {
+serverUDP.on("message", async (msg, rinfo) => {
 
 	console.log("-----------start serverUDP.message-----------");
-
+	let ProccessUDPMessage = require("./processors/udpProcessor");
 	// Displaying the client address
-	console.log("Message from IP: " + rinfo.address + "\n");
+	
 
-	// Displaying the client message
-	console.log(msg + "");
+	await ProccessUDPMessage.proccessUDPMessage(msg, rinfo.address);
 
 	// Exiting process
 	process.exit();
