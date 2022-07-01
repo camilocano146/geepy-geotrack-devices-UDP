@@ -68,6 +68,7 @@ exports.sendToGeepyCloudAPI= async (package) => {
         
 
         let package_parse = normalizePackage(package);
+        console.log(package_parse);
         await http_factory.post(config["geepy-cloud-auth"].hostname, config["geepy-cloud-auth"].path, config["geepy-cloud-auth"].port, headers_package, package_parse,  function(err, result_geo) {
             if (err) {
                 console.log(err);
@@ -82,15 +83,19 @@ exports.sendToGeepyCloudAPI= async (package) => {
 function normalizePackage(package){
     if(package.imei != undefined){
         package.IMEI = parseInt(package.imei);
+        delete package.imei;
     }
     if(package.timestamp != undefined){
         package.ts = parseInt(package.timestamp);
+        delete package.timestamp;
     }
     if(package.latitude != undefined){
         package.lat = parseFloat(package.latitude);
+        delete package.latitude;
     }
     if(package.longitude != undefined){
         package.long = parseFloat(package.longitude);
+        delete package.longitude;
     }
     package.sat = 0;
     package.alt = 0;
@@ -100,9 +105,22 @@ function normalizePackage(package){
     package.protocol = 0;
     package.event = 1;
 	package.data = {};
-    package.data.batt_volt = package.batt_volt;
-    package.data.current = package.current;
-    package.data.capacity = package.capacity;
-    package.data.device_ID = package.device_ID;
+    if(package.batt_volt != undefined){
+        package.data.batt_volt = package.batt_volt;
+        delete package.batt_volt;
+    }
+    if(package.current != undefined){
+        package.data.current = package.current;
+        delete package.current;
+    }
+    if(package.capacity != undefined){
+        package.data.capacity = package.capacity;
+        delete package.capacity;
+    }
+    if(package.device_ID != undefined){
+        package.data.device_ID = package.device_ID;
+        delete package.device_ID;
+    }
+    
     return package;
 }
