@@ -64,13 +64,11 @@ exports.sendToGeepyCloudAPI= async (package) => {
             'Authorization': "Bearer "+securityToken.access_token
         }
         console.log(package);
-        package.event = 1;
-        package.IMEI = package.imei;
-        package.ts = package.timestamp;
-        package.lat = package.latitude;
-        package.long = package.longitude;
-        //let package_parse = JSON.parse(package);
-        await http_factory.post(config["geepy-cloud-auth"].hostname, config["geepy-cloud-auth"].path, config["geepy-cloud-auth"].port, headers_package, package,  function(err, result_geo) {
+        
+        
+
+        let package_parse = normalizePackage(package);
+        await http_factory.post(config["geepy-cloud-auth"].hostname, config["geepy-cloud-auth"].path, config["geepy-cloud-auth"].port, headers_package, package_parse,  function(err, result_geo) {
             if (err) {
                 console.log(err);
                 return err
@@ -79,4 +77,32 @@ exports.sendToGeepyCloudAPI= async (package) => {
             return result_geo
         });
     });
+}
+
+function normalizePackage(package){
+    if(package.imei != undefined){
+        package.IMEI = parseInt(package.imei);
+    }
+    if(package.timestamp != undefined){
+        package.ts = parseInt(package.timestamp);
+    }
+    if(package.latitude != undefined){
+        package.lat = parseFloat(package.latitude);
+    }
+    if(package.longitude != undefined){
+        package.long = parseFloat(package.longitude);
+    }
+    package.sat = 0;
+    package.alt = 0;
+	package.dist = 0;
+	package.spd = 0;
+    package.bat = 0;
+    package.protocol = 0;
+    package.event = 1;
+	package.data = {};
+    package.data.batt_volt = package.batt_volt;
+    package.data.current = package.current;
+    package.data.capacity = package.capacity;
+    package.data.device_ID = package.device_ID;
+    return package;
 }
