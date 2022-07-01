@@ -44,7 +44,7 @@ serverUDP.on("message", async (msg, rinfo) => {
 	await ProccessUDPMessage.proccessUDPMessage(msg, rinfo.address);
 
 	// Exiting process
-	process.exit();
+	//process.exit();
 
 	console.log("-----------end serverUDP.message----------- \n");
 
