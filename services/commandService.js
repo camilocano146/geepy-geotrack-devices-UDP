@@ -15,14 +15,15 @@ exports.send= async (req, callback) => {
                     console.log(device);
                     var data = Buffer.from(body.data);
                 
-                    client.on('message',function(msg,info){
+                    client.on('message',(msg,info)=>{
                         console.log('Data received from server : ' + msg.toString());
                         console.log('Received %d bytes from %s:%d\n',msg.length, info.address, info.port);
                     });
                       
                     //sending msg
-                    client.send(data,2222,device.ip,function(error){
-                        if(error){
+                    client.send(data,600,device.ip,(err)=>{
+                        if(err){
+                            console.log(err);
                           client.close();
                         }else{
                           console.log('Data sent !!!');
@@ -31,7 +32,7 @@ exports.send= async (req, callback) => {
                     });
                     //;
                 }).catch(err => {
-                    callback(err)
+                    callback(err)   
                     return
                 })
         }).catch(err => {
