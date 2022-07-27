@@ -19,6 +19,13 @@ exports.send= async (req, callback) => {
                         console.log('Data received from server : ' + msg.toString());
                         console.log('Received %d bytes from %s:%d\n',msg.length, info.address, info.port);
                     });
+
+                    // Bind your port here
+                    client.bind({
+                        address: '0.0.0.0',
+                        port: 50000,
+                        exclusive: true
+                    }); 
                       
                     //sending msg
                     client.send(data,600,device.ip,(err)=>{
