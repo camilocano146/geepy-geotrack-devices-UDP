@@ -6,7 +6,7 @@ var cors = require('cors');
 const http = require('http');
 // Importing dgram module
 var dgram = require('dgram');
-var port = process.env.PORT || 3001;
+var port = process.env.PORT || 80;
 
 const app = express();
 
