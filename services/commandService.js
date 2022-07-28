@@ -27,9 +27,9 @@ exports.send= async (req, callback) => {
                     client.send(data,600,device.ip,(err)=>{
                         if(err){
                             console.log(err);
-                          client.close();
+                            client.close();
                         }else{
-                          console.log('Data sent !!!');
+                          console.log("-------------Command sent--------------");
                           return callback(null, device)
                         }
                     });
