@@ -5,9 +5,9 @@ exports.proccessUDPMessage = async(message, ipSource) => {
     console.log('\x1b[35m', 'app.processors.proccessUDPMessage.proccessUDPMessage');
     // console.log('holi')
     message = message + "";
-    console.log("------------IP------------");
+    console.log("IP------------");
     console.log(ipSource);
-    console.log("------------Message------------");
+    console.log("Message------------");
     console.log(message);
 
     message_parser = JSON.parse(message);

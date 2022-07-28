@@ -4,7 +4,7 @@ var udp = require('dgram');
 
 // creating a client socket
 var client = udp.createSocket('udp4');
-var buffer = require('buffer');
+var buffer = require('buffer'); 
 
 
 exports.send= async (req, callback) => {
@@ -21,11 +21,7 @@ exports.send= async (req, callback) => {
                     });
 
                     // Bind your port here
-                    client.bind({
-                        address: '0.0.0.0',
-                        port: 50000,
-                        exclusive: true
-                    }); 
+                    client.bind(50000); 
                       
                     //sending msg
                     client.send(data,600,device.ip,(err)=>{
