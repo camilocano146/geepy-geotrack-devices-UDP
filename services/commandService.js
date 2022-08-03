@@ -3,7 +3,7 @@ const connectionDB = require('../database/connection-mongodb');
 var udp = require('dgram');
 
 // creating a client socket
-var client = udp.createSocket({type: 'udp4', reuseAddr: true});
+var client = udp.createSocket({type: 'udp4'});
 //var buffer = require('buffer'); 
 
 
