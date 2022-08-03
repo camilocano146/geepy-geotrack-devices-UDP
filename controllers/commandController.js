@@ -5,6 +5,7 @@ exports.send = async(req, res) => {
     // console.log('holi')
     await commandService.send(req, function(err, result) {
         if (err) {
+            console.log(err);
             return res.status(400).json({
                 success: false,
                 body: err

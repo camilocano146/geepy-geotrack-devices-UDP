@@ -1,12 +1,11 @@
 const { off } = require("../models/device");
 let deviceIotService = require("../services/deviceIotService");
 
-exports.proccessUDPMessage = async(message, ipSource) => {
-    console.log('\x1b[35m', 'app.processors.proccessUDPMessage.proccessUDPMessage');
-    // console.log('holi')
+exports.proccessUDPMessage = async(message, rinfo) => {
+    console.log('\x1b[35m', 'app.processors.udpProcessor.proccessUDPMessage');
     message = message + "";
-    console.log("IP------------");
-    console.log(ipSource);
+    console.log("IP:PORT------------");
+    console.log(rinfo.address+":"+rinfo.port);
     console.log("Message------------");
     console.log(message);
 

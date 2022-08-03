@@ -27,7 +27,7 @@ exports.updateIpByImei= async (imei, ipSource, callback) => {
     console.log("app.services.deviceIotService.updateIpByImei");
     await connectionDB().then(async() => {
             await Device.findOneAndUpdate({"imei":imei}, {"ip":ipSource},{ new: true }).then(device => {
-                    console.log("IP of device:" + imei + "updated");
+                    console.log("Updated IP of device:" + imei);
                     return device
                 }).catch(err => {
                     callback(err)

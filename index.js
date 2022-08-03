@@ -7,6 +7,7 @@ const http = require('http');
 // Importing dgram module
 var dgram = require('dgram');
 var port = process.env.PORT || 3001;
+var portUDP = 50000;
 
 
 const app = express();
@@ -30,7 +31,7 @@ app.use(express.static('public'));
 const server = http.createServer(app);
 
 // servers UDP
-var serverUDP = dgram.createSocket("udp4", () => {
+var serverUDP = dgram.createSocket({type: 'udp4', reuseAddr: true}, () => {
 	console.log("server in port 50000 was create");
 });
 
@@ -42,7 +43,7 @@ serverUDP.on("message", async (msg, rinfo) => {
 	// Displaying the client address
 	
 
-	await ProccessUDPMessage.proccessUDPMessage(msg, rinfo.address);
+	await ProccessUDPMessage.proccessUDPMessage(msg, rinfo);
 
 	// Exiting process
 	//process.exit();
@@ -68,8 +69,7 @@ serverUDP.on('listening', () => {
 
 // Binding server with port address
 // by using bind() method
-serverUDP.bind(50000, () => {
-
+serverUDP.bind(portUDP, () => {
 
 	console.log("-----------start serverUDP.bind-----------");
 	// Setting the Send buffer size
