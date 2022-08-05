@@ -13,15 +13,15 @@ exports.send= async (req, callback) => {
     await connectionDB().then(async() => {
             await Device.find({"imei":body.imei}).then(device => {
 
-                    //let bufferCommand = new ArrayBuffer(body.data.length/2);
-                    let bufferCommand = [];
+                    let bufferCommand = new ArrayBuffer(body.data.length/2);
+                    //let bufferCommand = [];
                     
                     for(let i=0; i < body.data.length; i+=2){
                     //for(let i=0; i < body.data.length-1300; i++){
                         let pairHexToBin = hex2bin(body.data[i]+body.data[i+1]);
                         console.log(body.data[i] + body.data[i+1] + " = " + hex2bin(body.data[i]+body.data[i+1]));
-                        //bufferCommand[i] = pairHexToBin;
-                        bufferCommand.push(pairHexToBin);
+                        bufferCommand[i] = pairHexToBin;
+                        //bufferCommand.push(pairHexToBin);
                     }
 
                     body.data = bufferCommand;
