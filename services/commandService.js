@@ -20,15 +20,13 @@ exports.send= async (req, callback) => {
                     for(let i=0; i < body.data.length; i+=2){
                     //for(let i=0; i < body.data.length-1300; i++){
                         let pairHexToBin = hex2bin(body.data[i]+body.data[i+1]);
-                        console.log(body.data[i] + body.data[i+1] + " = " + hex2bin(body.data[i]+body.data[i+1]));
-                        bufferCommand[count] = parseInt(body.data[i]+body.data[i+1]);
+                        //console.log(body.data[i] + body.data[i+1] + " = " + hex2bin(body.data[i]+body.data[i+1]));
+                        bufferCommand[count] = parseInt(pairHexToBin);
                         count+=1;
                         //bufferCommand.push(pairHexToBin);
                     }
 
                     body.data = bufferCommand;
-
-                    console.log(body.data.length);
 
                     console.log(body);
                     
