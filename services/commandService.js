@@ -41,7 +41,8 @@ exports.send= async (req, callback) => {
                         // Setting the Send buffer size
                         // by using setSendBufferSize() method
                         client.setSendBufferSize(100000);
-                        client.send(data,60000,"34.204.219.9",(err)=>{
+                        //client.send(data,60000,device.ip,(err)=>{
+                        client.send(data,600,device.ip,(err)=>{
                             if(err){
                                 console.log(err);
                                 client.close();
@@ -57,7 +58,7 @@ exports.send= async (req, callback) => {
                     
                     
                     //sending msg
-                    //client.send(data,600,device.ip,(err)=>{
+                    //
                     
                     //;
                 }).catch(err => {
