@@ -21,7 +21,7 @@ exports.send= async (req, callback) => {
                     //for(let i=0; i < body.data.length-1300; i++){
                         let pairHexToBin = hex2bin(body.data[i]+body.data[i+1]);
                         console.log(body.data[i] + body.data[i+1] + " = " + hex2bin(body.data[i]+body.data[i+1]));
-                        bufferCommand[count] = parseInt(pairHexToBin);
+                        bufferCommand[count] = parseInt(body.data[i]+body.data[i+1]);
                         count+=1;
                         //bufferCommand.push(pairHexToBin);
                     }
