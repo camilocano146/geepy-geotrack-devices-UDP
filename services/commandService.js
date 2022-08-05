@@ -26,6 +26,8 @@ exports.send= async (req, callback) => {
 
                     body.data = bufferCommand;
 
+                    console.log(body.data.length);
+
                     console.log(body);
                     
                     client.on('message',(msg,info)=>{
