@@ -3,7 +3,7 @@ const connectionDB = require('../database/connection-mongodb');
 var udp = require('dgram');
 
 // creating a client socket
-var client = udp.createSocket({type: 'udp4'});
+var client = udp.createSocket({type: 'udp4', reuseAddr: true});
 //var buffer = require('buffer'); 
 
 
@@ -12,21 +12,18 @@ exports.send= async (req, callback) => {
     let body = req.body;
     await connectionDB().then(async() => {
             await Device.find({"imei":body.imei}).then(device => {
-                    
-                    //
 
-                    let command_binary = "";
+                    let bufferCommand = new ArrayBuffer(body.data.length/2);
+                    //let bufferCommand = [];
                     
                     for(let i=0; i < body.data.length; i+=2){
                     //for(let i=0; i < body.data.length-1300; i++){
                         let pairHexToBin = hex2bin(body.data[i]+body.data[i+1]);
-                        //console.log(body.data[i] + body.data[i+1] + " = " + hex2bin(body.data[i]+body.data[i+1]));
-                        command_binary += pairHexToBin;
+                        console.log(body.data[i] + body.data[i+1] + " = " + hex2bin(body.data[i]+body.data[i+1]));
+                        bufferCommand[i] = pairHexToBin;
                     }
 
-                    //body.data = command_binary;
-
-                    body.data = "*s#";
+                    body.data = bufferCommand;
 
                     console.log(body);
                     
@@ -38,21 +35,33 @@ exports.send= async (req, callback) => {
                     var data = Buffer.from(JSON.stringify(body));
 
                     // Bind your port here
-                    client.bind(50000); 
+
+                    client.bind(50000, () => {
+                        console.log("-----------start serverUDP.bind-----------");
+                        // Setting the Send buffer size
+                        // by using setSendBufferSize() method
+                        client.setSendBufferSize(100000);
+                        client.send(data,60000,"34.204.219.9",(err)=>{
+                            if(err){
+                                console.log(err);
+                                client.close();
+                            }else{
+                              console.log("-------------Command sent--------------");
+                              client.close();
+                              return callback(null, device)
+                            }
+                        });
+                    });
+
+                    // buffer size
+                    
                     
                     //sending msg
-                    client.send(data,600,device.ip,(err)=>{
-                    //client.send(data,50000,"34.204.219.9",(err)=>{
-                        if(err){
-                            console.log(err);
-                            client.close();
-                        }else{
-                          console.log("-------------Command sent--------------");
-                          return callback(null, device)
-                        }
-                    });
+                    //client.send(data,600,device.ip,(err)=>{
+                    
                     //;
                 }).catch(err => {
+                    console.log(err);
                     callback(err)   
                     return
                 })
