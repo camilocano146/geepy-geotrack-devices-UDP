@@ -7,7 +7,7 @@ const http = require('http');
 // Importing dgram module
 var dgram = require('dgram');
 var port = process.env.PORT || 3001;
-var portUDP = 60000;
+var portUDP = 50000;
 
 const app = express();
 

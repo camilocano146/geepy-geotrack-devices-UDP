@@ -13,17 +13,19 @@ exports.send= async (req, callback) => {
     await connectionDB().then(async() => {
             await Device.find({"imei":body.imei}).then(device => {
 
-                    let bufferCommand = new ArrayBuffer(body.data.length/2);
-                    //let bufferCommand = [];
+                    //let bufferCommand = new ArrayBuffer(body.data.length/2);
+                    let bufferCommand = [];
+
+                    console.log(body.data.length);
                     
                     let count = 0;
                     for(let i=0; i < body.data.length; i+=2){
                     //for(let i=0; i < body.data.length-1300; i++){
-                        let pairHexToBin = hex2bin(body.data[i]+body.data[i+1]);
-                        //console.log(body.data[i] + body.data[i+1] + " = " + hex2bin(body.data[i]+body.data[i+1]));
-                        bufferCommand[count] = pairHexToBin;
-                        count+=1;
-                        //bufferCommand.push(pairHexToBin);
+                        let pairHexToDec = hex2dec(body.data[i]+body.data[i+1]);
+                        console.log(body.data[i] + body.data[i+1] + " = " + hex2dec(body.data[i]+body.data[i+1]));
+                        //bufferCommand[count] = pairHexToDec;
+                        //count+=1;
+                        bufferCommand.push(pairHexToDec);
                     }
 
                     body.data = bufferCommand;
@@ -77,4 +79,8 @@ exports.send= async (req, callback) => {
 
 function hex2bin(hex){
     return (parseInt(hex, 16).toString(2)).padStart(8, '0');
+}
+
+function hex2dec(hex){
+    return parseInt(hex, 16);
 }
