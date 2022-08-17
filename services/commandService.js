@@ -4,7 +4,7 @@ var udp = require('dgram');
 
 // creating a client socket
 var client = udp.createSocket({type: 'udp4', reuseAddr: true});
-//var buffer = require('buffer'); 
+var buffer = require('buffer'); 
 
 
 exports.send= async (req, callback) => {
@@ -13,8 +13,8 @@ exports.send= async (req, callback) => {
     await connectionDB().then(async() => {
             await Device.find({"imei":body.imei}).then(device => {
 
-                    //let bufferCommand = new ArrayBuffer(body.data.length/2);
-                    let bufferCommand = [];
+                    let bufferCommand = new Uint8Array(body.data.length/2);
+                    //let arrayCommand = [];
 
                     console.log(body.data.length);
                     
@@ -22,24 +22,28 @@ exports.send= async (req, callback) => {
                     for(let i=0; i < body.data.length; i+=2){
                     //for(let i=0; i < body.data.length-1300; i++){
                         let pairHexToDec = hex2dec(body.data[i]+body.data[i+1]);
-                        console.log(body.data[i] + body.data[i+1] + " = " + hex2dec(body.data[i]+body.data[i+1]));
-                        //bufferCommand[count] = pairHexToDec;
-                        //count+=1;
-                        bufferCommand.push(pairHexToDec);
+                        //console.log(body.data[i] + body.data[i+1] + " = " + hex2dec(body.data[i]+body.data[i+1]));
+                        bufferCommand[count] = pairHexToDec;
+                        count+=1;
+                        //arrayCommand.push(pairHexToDec);
                     }
 
-                    body.data = bufferCommand;
+                    const base64String = String.fromCharCode(...bufferCommand);
 
-                    
+                    body.data = base64String;
                     
                     client.on('message',(msg,info)=>{
                         console.log('Data received from server : ' + msg.toString());
                         console.log('Received %d bytes from %s:%d\n',msg.length, info.address, info.port);
                     });
 
-                    let string_command = JSON.stringify(body).replace("[","{").replace("]","}");
+                    console.log(body);
 
-                    var data = Buffer.from(string_command);
+                    let trailing_bytes = JSON.stringify(body)+"EEEEEEEEE";
+
+                    console.log(trailing_bytes);
+
+                    var data = new Buffer.from(trailing_bytes);
 
                     console.log(data);
 
