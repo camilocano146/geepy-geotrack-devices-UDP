@@ -31,6 +31,7 @@ exports.send= async (req, callback) => {
                     const base64String = String.fromCharCode(...bufferCommand);
 
                     body.data = base64String;
+                    body.imei = body.imei + "";
                     
                     client.on('message',(msg,info)=>{
                         console.log('Data received from server : ' + msg.toString());
