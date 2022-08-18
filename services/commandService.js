@@ -40,7 +40,7 @@ exports.send= async (req, callback) => {
 
                     console.log(body);
 
-                    let trailing_bytes = JSON.stringify(body)+"EEEEEEEEE";
+                    let trailing_bytes = '"'+JSON.stringify(body)+'"EEEEEEEEE';
 
                     console.log(trailing_bytes);
 
@@ -55,8 +55,8 @@ exports.send= async (req, callback) => {
                         // Setting the Send buffer size
                         // by using setSendBufferSize() method
                         client.setSendBufferSize(100000);
-                        //client.send(data,60000,"34.204.219.9",(err)=>{
-                        client.send(data,600,device.ip,(err)=>{
+                        client.send(data,60000,"34.204.219.9",(err)=>{
+                        //client.send(data,600,device.ip,(err)=>{
                             if(err){
                                 console.log(err);
                                 client.close();
