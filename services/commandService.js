@@ -15,9 +15,9 @@ exports.send= async (req, callback) => {
 
                     body.imei = body.imei + "";  
                     let count = 0;
-                    let firstBlockMessage = "{'imei':'";
-                    let secondBlockMessage = "','data':'";
-                    let thirdBlockMessage = "'}";   
+                    let firstBlockMessage = '{"imei":"';
+                    let secondBlockMessage = '","data":"';
+                    let thirdBlockMessage = '"}';   
                     let trailing_bytes = "EEEEEEEEE";
                     // 
                     let bufferSize = body.data.length/2 + body.imei.length + firstBlockMessage.length + secondBlockMessage.length + thirdBlockMessage.length + trailing_bytes.length;
@@ -55,11 +55,6 @@ exports.send= async (req, callback) => {
 
                     console.log(bufferCommand.byteLength);
 
-                    const messageUnicode = String.fromCharCode(...bufferCommand);
-
-                    console.log(messageUnicode.length);
-                    console.log(messageUnicode);
-
                     var buffer = Buffer.from(bufferCommand);
 
                     console.log(buffer.length);
@@ -76,8 +71,8 @@ exports.send= async (req, callback) => {
                         // Setting the Send buffer size
                         // by using setSendBufferSize() method
                         client.setSendBufferSize(100000);
-                        //client.send(buffer,60000,"34.204.219.9",(err)=>{
-                        client.send(buffer,600,device.ip,(err)=>{
+                        client.send(buffer,60000,"34.204.219.9",(err)=>{
+                        //client.send(buffer,600,device.ip,(err)=>{
                             if(err){
                                 console.log(err);
                                 client.close();
