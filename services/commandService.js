@@ -15,12 +15,12 @@ exports.send= async (req, callback) => {
 
                     body.imei = body.imei + "";  
                     let count = 0;
-                    let firstBlockMessage = '{"imei":"';
+                    let firstBlockMessage = '"{"imei":"';
                     let secondBlockMessage = '","data":"';
                     let thirdBlockMessage = '"}';   
-                    let trailing_bytes = "EEEEEEEEE";
+                    let trailing_bytes = 'EEEEEEEEE"';
                     // 
-                    let bufferSize = body.data.length/2 + body.imei.length + firstBlockMessage.length + secondBlockMessage.length + thirdBlockMessage.length + trailing_bytes.length;
+                    let bufferSize = body.data.length/2 + body.imei.length + firstBlockMessage.length + secondBlockMessage.length + thirdBlockMessage.length + trailing_bytes.length + 2;
                     let bufferCommand = new Uint8Array(bufferSize);
                     let blocksToProcces = [firstBlockMessage,body.imei,secondBlockMessage]
                     
