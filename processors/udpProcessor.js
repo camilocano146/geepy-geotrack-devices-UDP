@@ -13,7 +13,7 @@ exports.proccessUDPMessage = async(message, rinfo) => {
     let numberKeys = Object.keys(message_parser).length;
     console.log(numberKeys);
     // verifica si tiene solo una clave y si es imei
-    if(numberKeys == 1 && message_parser.imei != undefined){
+    if(message_parser.imei != undefined){
         await deviceIotService.updateIpByImei(message_parser.imei, rinfo.address, function(err, result) {
             if (err) {
                 console.log(err);

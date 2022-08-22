@@ -53,21 +53,21 @@ exports.send= async (req, callback) => {
                         }
                     }
 
+                    console.log(bufferCommand.byteLength);
+
                     const messageUnicode = String.fromCharCode(...bufferCommand);
 
                     console.log(messageUnicode.length);
                     console.log(messageUnicode);
+
+                    var buffer = Buffer.from(bufferCommand);
+
+                    console.log(buffer.length);
                     
                     client.on('message',(msg,info)=>{
                         console.log('Data received from server : ' + msg.toString());
                         console.log('Received %d bytes from %s:%d\n',msg.length, info.address, info.port);
                     });
-
-                    
-                    var data = new Buffer.from(messageUnicode);
-
-                    console.log(data);
-                    console.log(data+"");
 
                     // Bind your port here
 
@@ -76,8 +76,8 @@ exports.send= async (req, callback) => {
                         // Setting the Send buffer size
                         // by using setSendBufferSize() method
                         client.setSendBufferSize(100000);
-                        //client.send(data,60000,"34.204.219.9",(err)=>{
-                        client.send(data,600,device.ip,(err)=>{
+                        client.send(buffer,60000,"34.204.219.9",(err)=>{
+                        //client.send(messageUnicode.buffer,600,device.ip,(err)=>{
                             if(err){
                                 console.log(err);
                                 client.close();
