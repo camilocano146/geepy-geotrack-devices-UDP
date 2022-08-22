@@ -13,12 +13,27 @@ exports.send= async (req, callback) => {
     await connectionDB().then(async() => {
             await Device.find({"imei":body.imei}).then(device => {
 
-                    let bufferCommand = new Uint8Array(body.data.length/2);
-                    //let arrayCommand = [];
-
-                    console.log(body.data.length);
-                    
+                    body.imei = body.imei + "";  
                     let count = 0;
+                    let firstBlockMessage = "{'imei':'";
+                    let secondBlockMessage = "','data':'";
+                    let thirdBlockMessage = "'}";   
+                    let trailing_bytes = "EEEEEEEEE";
+                    // 
+                    let bufferSize = body.data.length/2 + body.imei.length + firstBlockMessage.length + secondBlockMessage.length + thirdBlockMessage.length + trailing_bytes.length;
+                    let bufferCommand = new Uint8Array(bufferSize);
+                    let blocksToProcces = [firstBlockMessage,body.imei,secondBlockMessage]
+                    
+                          
+                    
+                    for(let i=0; i<blocksToProcces.length; i++){
+                        for(let j=0; j < blocksToProcces[i].length; j++){
+                            let ascci = blocksToProcces[i].charCodeAt(j);
+                            bufferCommand[count] = ascci;
+                            count+=1;
+                        }
+                    }
+
                     for(let i=0; i < body.data.length; i+=2){
                     //for(let i=0; i < body.data.length-1300; i++){
                         let pairHexToDec = hex2dec(body.data[i]+body.data[i+1]);
@@ -28,25 +43,31 @@ exports.send= async (req, callback) => {
                         //arrayCommand.push(pairHexToDec);
                     }
 
-                    const base64String = String.fromCharCode(...bufferCommand);
+                    blocksToProcces = [thirdBlockMessage, trailing_bytes ]
 
-                    body.data = base64String;
-                    body.imei = body.imei + "";
+                    for(let i=0; i<blocksToProcces.length; i++){
+                        for(let j=0; j < blocksToProcces[i].length; j++){
+                            let ascci = blocksToProcces[i].charCodeAt(j);
+                            bufferCommand[count] = ascci;
+                            count+=1;
+                        }
+                    }
+
+                    const messageUnicode = String.fromCharCode(...bufferCommand);
+
+                    console.log(messageUnicode.length);
+                    console.log(messageUnicode);
                     
                     client.on('message',(msg,info)=>{
                         console.log('Data received from server : ' + msg.toString());
                         console.log('Received %d bytes from %s:%d\n',msg.length, info.address, info.port);
                     });
 
-                    console.log(body);
-
-                    let trailing_bytes = '"'+JSON.stringify(body)+'"EEEEEEEEE';
-
-                    console.log(trailing_bytes);
-
-                    var data = new Buffer.from(trailing_bytes);
+                    
+                    var data = new Buffer.from(messageUnicode);
 
                     console.log(data);
+                    console.log(data+"");
 
                     // Bind your port here
 
@@ -67,14 +88,6 @@ exports.send= async (req, callback) => {
                             }
                         });
                     });
-
-                    // buffer size
-                    
-                    
-                    //sending msg
-                    //
-                    
-                    //;
                 }).catch(err => {
                     console.log(err);
                     callback(err)   
