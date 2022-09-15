@@ -3,7 +3,7 @@ const connectionDB = require('../database/connection-mongodb');
 var udp = require('dgram');
 
 // creating a client socket
-var client = udp.createSocket({type: 'udp4', reuseAddr: true});
+
 var buffer = require('buffer'); 
 
 
@@ -56,10 +56,12 @@ exports.send= async (req, callback) => {
                     console.log(bufferCommand.byteLength);
                     console.log(bufferCommand);
 
-                    var buffer = Buffer.from(bufferCommand);
+                    let buffer = Buffer.from(bufferCommand);
 
                     console.log(buffer.length);
                     console.log(buffer);
+
+                    let client = udp.createSocket({type: 'udp4', reuseAddr: true});
                     
                     client.on('message',(msg,info)=>{
                         console.log('Data received from server : ' + msg.toString());
@@ -72,7 +74,7 @@ exports.send= async (req, callback) => {
                         console.log("-----------start serverUDP.bind-----------");
                         // Setting the Send buffer size
                         // by using setSendBufferSize() method
-                        client.setSendBufferSize(100000);
+                        client.setSendBufferSize(65535);
                         //client.send(buffer,60000,"34.204.219.9",(err)=>{// servidor ec2
                         //client.send(buffer,50000,"191.156.142.114",(err)=>{
                         client.send(buffer,600,device.ip,(err)=>{// dispositivo
