@@ -1,11 +1,6 @@
 let Device = require("../models/device");
 const connectionDB = require('../database/connection-mongodb');
-var udp = require('dgram');
-
-// creating a client socket
-
-var buffer = require('buffer'); 
-
+var udp = require("../utils/communication_protocols/udp");
 
 exports.send= async (req, callback) => {
     console.log("app.services.commandService.send");
@@ -19,12 +14,9 @@ exports.send= async (req, callback) => {
                     let secondBlockMessage = '","data":"';
                     let thirdBlockMessage = '"}';   
                     let trailing_bytes = 'EEEEEEEEE';
-                    // 
                     let bufferSize = body.data.length/2 + body.imei.length + firstBlockMessage.length + secondBlockMessage.length + thirdBlockMessage.length + trailing_bytes.length + 2;
                     let bufferCommand = new Uint8Array(bufferSize);
                     let blocksToProcces = [firstBlockMessage,body.imei,secondBlockMessage]
-                    
-                          
                     
                     for(let i=0; i<blocksToProcces.length; i++){
                         for(let j=0; j < blocksToProcces[i].length; j++){
@@ -43,7 +35,7 @@ exports.send= async (req, callback) => {
                         //arrayCommand.push(pairHexToDec);
                     }
 
-                    blocksToProcces = [thirdBlockMessage, trailing_bytes ]
+                    blocksToProcces = [thirdBlockMessage, trailing_bytes ];
 
                     for(let i=0; i<blocksToProcces.length; i++){
                         for(let j=0; j < blocksToProcces[i].length; j++){
@@ -55,6 +47,10 @@ exports.send= async (req, callback) => {
 
                     console.log(bufferCommand.byteLength);
                     console.log(bufferCommand);
+
+                    udp.sendMeesage(bufferCommand, device.ip, 50000, 600);
+
+                    /*
 
                     let buffer = Buffer.from(bufferCommand);
 
@@ -87,7 +83,7 @@ exports.send= async (req, callback) => {
                               return callback(null, device)
                             }
                         });
-                    });
+                    });*/
                 }).catch(err => {
                     console.log(err);
                     callback(err)   

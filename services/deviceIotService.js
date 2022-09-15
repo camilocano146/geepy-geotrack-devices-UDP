@@ -3,25 +3,22 @@ const connectionDB = require('../database/connection-mongodb');
 let http_factory = require("../utils/communication_protocols/http_factory");
 let config = require("../config.json");
 const { response } = require("express");
-/*
-exports.list= async function(req, callback) {
-    console.log("app.services.deviceIotService.list");
-    connectionDB().then(() => {
+var udp = require("../utils/communication_protocols/udp");
 
-            Device.find().limit(100).then(devices => {
-                    console.log(devices);
-                    callback(null, { devices: devices})
-                    return
+const list = async function() {
+    console.log("app.services.deviceIotService.list");
+    return new Promise((resolve, reject) => {
+    connectionDB().then(() => {
+            Device.find({ ip: { $ne: null } }).limit(100).then(devices => {
+                resolve(devices)
                 }).catch(err => {
-                    callback(err)
-                    return
+                    reject(err)
                 })
         }).catch(err => {
-            callback(err)
-            return
-        })
+            reject(err);
+        });
+    });
 }
-*/
 
 exports.updateIpByImei= async (imei, ipSource, callback) => {
     console.log("app.services.deviceIotService.updateIpByImei");
@@ -123,4 +120,35 @@ function normalizePackage(package){
     }
     
     return package;
+}
+
+exports.startHeartBeat = async () => {
+    console.log("app.services.deviceIotService.startHeartBeat");
+    proccessDevice();
+}
+
+
+async function proccessDevice(){
+	console.log("app.services.deviceIotService.proccessDevice");
+	//await list(true, function(err, result) {
+    setTimeout(async() => {
+        let devices = await list();
+		if(devices!=undefined){
+			for(let i=0; i<devices.length; i++){
+				let ip = devices[i].ip;
+				console.log(ip);
+                sendCommandUDP(ip);
+			}
+		}
+    proccessDevice();
+    }, 10000);
+
+    
+}
+
+function sendCommandUDP(ip){
+    let bufferCommand = new Uint8Array(1);
+    let ascci = "F".charCodeAt(0);
+    bufferCommand[0] = ascci;
+    udp.sendMeesage(bufferCommand, ip,50000, 600);
 }

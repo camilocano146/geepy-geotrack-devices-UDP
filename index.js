@@ -8,6 +8,7 @@ const http = require('http');
 var dgram = require('dgram');
 var port = process.env.PORT || 3001;
 var portUDP = 50000;
+const deviceIotService = require("./services/deviceIotService");
 
 const app = express();
 
@@ -84,9 +85,12 @@ serverUDP.bind(portUDP, () => {
 	console.log("-----------end serverUDP.listening----------- \n");
 });
 
-server.listen(port, function() {
+server.listen(port, async function() {
 	console.log("-----------start server.listen-----------");
     console.log('Server API HTTP listening in: ' + port);
 	console.log("-----------end server.listen-----------\n");
+	deviceIotService.startHeartBeat();
 });
+
+
 
