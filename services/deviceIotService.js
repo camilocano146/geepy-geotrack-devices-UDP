@@ -51,27 +51,19 @@ exports.sendToGeepyCloudAPI= async (package) => {
 
     await http_factory.post(config["geepy-cloud-no-auth"].hostname, config["geepy-cloud-no-auth"].path, config["geepy-cloud-no-auth"].port, headers, body,  async function(err, result) {
         if (err) {
-            console.log(err);
             return err
         }
-        console.log(result);
         let securityToken =  JSON.parse(result);
         let headers_package= {
             'Content-Type': 'application/json',
             'Authorization': "Bearer "+securityToken.access_token
         }
-        console.log(package);
-        
-        
-
         let package_parse = normalizePackage(package);
-        console.log(package_parse);
         await http_factory.post(config["geepy-cloud-auth"].hostname, config["geepy-cloud-auth"].path, config["geepy-cloud-auth"].port, headers_package, package_parse,  function(err, result_geo) {
             if (err) {
                 console.log(err);
                 return err
             }
-            console.log(result_geo);
             return result_geo
         });
     });

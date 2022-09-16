@@ -26,18 +26,14 @@ exports.sendMeesage = async(bufferCommand, ip, originPort, destinityPort) => {
                 if(err){
                     console.log(err);
                     client.close();
+                    return false;
                 }else{
                 console.log("-------------Command sent--------------");
                 client.close();
+                return true;
                 //return callback(null, device)
                 }
             });
         });
-
     }
-
-    
-
-    
-
 }
