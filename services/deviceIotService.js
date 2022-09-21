@@ -129,18 +129,22 @@ async function proccessDevice(){
 			for(let i=0; i<devices.length; i++){
 				let ip = devices[i].ip;
 				console.log(ip);
-                sendCommandUDP(ip);
+                sendKeepAliveCommandUDP(ip);
 			}
 		}
     proccessDevice();
     }, 10000);
 
-    
 }
 
-function sendCommandUDP(ip){
-    let bufferCommand = new Uint8Array(1);
-    let ascci = "F".charCodeAt(0);
-    bufferCommand[0] = ascci;
-    udp.sendMeesage(bufferCommand, ip,50000, 600);
+function sendKeepAliveCommandUDP(ip){
+    let keep_alive = "keep aliveEEEEEEEEE";
+    let bufferCommand = new Uint8Array(keep_alive.length);
+    let count = 0;
+    for(let j=0; j < keep_alive.length; j++){
+        let ascci = keep_alive.charCodeAt(j);
+        bufferCommand[count] = ascci;
+        count+=1;
+    }
+    udp.sendMeesage(bufferCommand, ip, 50000, 600);
 }

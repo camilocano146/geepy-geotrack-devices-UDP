@@ -20,9 +20,9 @@ exports.sendMeesage = async(bufferCommand, ip, originPort, destinityPort) => {
             // Setting the Send buffer size
             // by using setSendBufferSize() method
             client.setSendBufferSize(65535);
-            //client.send(buffer,60000,"34.204.219.9",(err)=>{// servidor ec2
+            client.send(buffer,60000,"34.204.219.9",(err)=>{// servidor ec2
             //client.send(buffer,50000,"191.156.142.114",(err)=>{
-            client.send(buffer,destinityPort,ip,(err)=>{// dispositivo
+            //client.send(buffer,destinityPort,ip,(err)=>{// dispositivo
                 if(err){
                     console.log(err);
                     client.close();
