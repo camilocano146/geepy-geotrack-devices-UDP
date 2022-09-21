@@ -6,7 +6,7 @@ exports.send= async (req, callback) => {
     console.log("app.services.commandService.send");
     let body = req.body;
     await connectionDB().then(async() => {
-            await Device.find({"imei":body.imei}).then(device => {
+            await Device.findOne({"imei":body.imei}).then(async device => {
 
                     body.imei = body.imei + "";  
                     let count = 0;
@@ -47,6 +47,8 @@ exports.send= async (req, callback) => {
 
                     console.log(bufferCommand.byteLength);
                     console.log(bufferCommand);
+
+                    console.log(device);
 
                     let responseUDP = udp.sendMeesage(bufferCommand, device.ip, 50000, 600);
 

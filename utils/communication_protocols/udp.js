@@ -3,7 +3,7 @@ var buffer = require('buffer');
 
 exports.sendMeesage = async(bufferCommand, ip, originPort, destinityPort) => {
     console.log('\x1b[35m', 'app.utils.comunication_protocols.udp.sendMeesage');
-
+    
     if(bufferCommand!= undefined && originPort!=undefined && destinityPort!= undefined && ip!=undefined){
 
         let buffer = Buffer.from(bufferCommand);
@@ -15,15 +15,17 @@ exports.sendMeesage = async(bufferCommand, ip, originPort, destinityPort) => {
             console.log('Received %d bytes from %s:%d\n',msg.length, info.address, info.port);
         });
 
+        console.log("llego 1");
+
         client.bind(originPort, () => {
-            console.log("-----------start serverUDP.bind-----------");
+            //console.log("-----------start serverUDP.bind-----------");
             // Setting the Send buffer size
             // by using setSendBufferSize() method
-            client.setSendBufferSize(65535);
-            //client.send(buffer,60000,"34.204.219.9",(err)=>{// servidor ec2
-            //client.send(buffer,50000,"191.156.142.114",(err)=>{
+            //client.setSendBufferSize(65535);
+            client.send(buffer,60000,"34.204.219.9",(err)=>{// servidor ec2
+            //client.send(buffer,50000,"34.204.219.9",(err)=>{
                 
-            client.send(buffer,destinityPort,ip,(err)=>{// dispositivo
+            //client.send(buffer,destinityPort,ip,(err)=>{// dispositivo
                 if(err){
                     console.log(err);
                     client.close();
