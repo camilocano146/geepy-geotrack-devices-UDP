@@ -3,6 +3,9 @@ var buffer = require('buffer');
 
 exports.sendMeesage = async(bufferCommand, ip, originPort, destinityPort) => {
     console.log('\x1b[35m', 'app.utils.comunication_protocols.udp.sendMeesage');
+
+    console.log("To: "+ip+":"+destinityPort);
+    console.log("From: "+ originPort);  
     
     if(bufferCommand!= undefined && originPort!=undefined && destinityPort!= undefined && ip!=undefined){
 
@@ -14,8 +17,6 @@ exports.sendMeesage = async(bufferCommand, ip, originPort, destinityPort) => {
             console.log('Data received from server : ' + msg.toString());
             console.log('Received %d bytes from %s:%d\n',msg.length, info.address, info.port);
         });
-
-        console.log("llego 1");
 
         client.bind(originPort, () => {
             //console.log("-----------start serverUDP.bind-----------");
