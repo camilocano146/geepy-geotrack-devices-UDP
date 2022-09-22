@@ -14,7 +14,7 @@ exports.send= async (req, callback) => {
                     let secondBlockMessage = '","data":"';
                     let thirdBlockMessage = '"}';   
                     let trailing_bytes = 'EEEEEEEEE';
-                    let bufferSize = body.data.length/2 + body.imei.length + firstBlockMessage.length + secondBlockMessage.length + thirdBlockMessage.length + trailing_bytes.length + 2;
+                    let bufferSize = body.data.length/2 + body.imei.length + firstBlockMessage.length + secondBlockMessage.length + thirdBlockMessage.length + trailing_bytes.length;
                     let bufferCommand = new Uint8Array(bufferSize);
                     let blocksToProcces = [firstBlockMessage,body.imei,secondBlockMessage]
                     
@@ -47,10 +47,17 @@ exports.send= async (req, callback) => {
 
                     console.log(bufferCommand.byteLength);
                     console.log(bufferCommand);
+                    
+                    let commandString = "";
+                    for (let x of bufferCommand) {
+                        commandString = commandString +  String.fromCharCode(x);
+                    }
 
-                    console.log(device);
+                    console.log(commandString);
 
-                    let responseUDP = udp.sendMeesage(bufferCommand, device.ip, 50000, 600);
+                    //console.log(device);
+
+                    let responseUDP = udp.sendMeesage(bufferCommand, device.ip, 55000, 600);
 
                     if(!responseUDP){
                         return callback(null, {device:false})

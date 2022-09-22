@@ -146,5 +146,5 @@ function sendKeepAliveCommandUDP(ip){
         bufferCommand[count] = ascci;
         count+=1;
     }
-    udp.sendMeesage(bufferCommand, ip, 50000, 600);
+    udp.sendMeesage(bufferCommand, ip, 55000, 600);
 }
