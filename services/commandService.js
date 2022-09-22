@@ -55,9 +55,7 @@ exports.send= async (req, callback) => {
 
                     console.log(commandString);
 
-                    //console.log(device);
-
-                    let responseUDP = udp.sendMeesage(bufferCommand, device.ip, 55000, 600);
+                    let responseUDP = udp.sendMeesage(bufferCommand, device.ip, 50000, 600);
 
                     if(!responseUDP){
                         return callback(null, {device:false})
