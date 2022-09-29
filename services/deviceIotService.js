@@ -63,6 +63,8 @@ exports.sendToGeepyCloudAPI= async (package) => {
             if (err) {
                 console.log(err);
                 return err
+            }else{
+                console.log(result_geo);
             }
             return result_geo
         });
@@ -73,6 +75,16 @@ function normalizePackage(package){
     if(package.imei != undefined){
         package.IMEI = parseInt(package.imei);
         delete package.imei;
+    }else if(package.id!= undefined){
+        if(package.id.imei!= undefined){
+            package.IMEI = parseInt(package.imei);
+            delete package.id.imei;
+        }
+        if(package.id.trTS!= undefined){
+            package.ts = parseInt(package.trTS);
+            delete package.id.trTS;
+        }
+        delete package.id;
     }
     if(package.timestamp != undefined){
         package.ts = parseInt(package.timestamp);
