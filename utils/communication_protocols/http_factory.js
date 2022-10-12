@@ -8,7 +8,7 @@ exports.getHeaders = async() => {
  
 }
 
-exports.post = async(hostname, path, port, headers, body, callback) => {
+exports.post = async(hostname, path, port, headers, body) => {
     console.log('\x1b[35m', 'app.utils.comunication_protocols.http_factory.post');
 
     var postData = JSON.stringify(body);
@@ -21,12 +21,13 @@ exports.post = async(hostname, path, port, headers, body, callback) => {
         headers: headers
       };
       
-      
+      /*
       const req = await https.request(options, (res) => {
         console.log('statusCode:', res.statusCode);
         //console.log('headers:', res.headers);
       
         res.on('data', (response) => {
+          console.log("on");
           callback(null, response+"");
         });
 
@@ -37,6 +38,29 @@ exports.post = async(hostname, path, port, headers, body, callback) => {
       });
 
       req.write(postData);
-      req.end();
- 
+      req.end();*/
+
+
+      return new Promise((resolve,reject) => {
+        let body = '';
+
+        const req = https.request(options, (res) => {
+
+          console.log('statusCode:', res.statusCode);
+
+          res.on('data', (chunk) => (body += chunk.toString()));
+
+          res.on('error', reject);
+
+          res.on('end', () => {
+
+               resolve(body+"");
+
+          });
+        });
+
+        req.on('error', reject);
+        req.write(postData);
+        req.end();
+      });
 }

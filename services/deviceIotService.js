@@ -25,7 +25,7 @@ exports.updateIpByImei= async (imei, ipSource, callback) => {
     await connectionDB().then(async() => {
             await Device.findOneAndUpdate({"imei":imei}, {"ip":ipSource},{ new: true }).then(device => {
                     console.log("Updated IP of device:" + imei);
-                    return device
+                    return callback(null, device)
                 }).catch(err => {
                     callback(err)
                     return
@@ -49,81 +49,94 @@ exports.sendToGeepyCloudAPI= async (package) => {
         'Content-Type': 'application/json'
     }
 
-    await http_factory.post(config["geepy-cloud-no-auth"].hostname, config["geepy-cloud-no-auth"].path, config["geepy-cloud-no-auth"].port, headers, body,  async function(err, result) {
-        if (err) {
-            return err
-        }
-        let securityToken =  JSON.parse(result);
+    //await http_factory.post(config["geepy-cloud-no-auth"].hostname, config["geepy-cloud-no-auth"].path, config["geepy-cloud-no-auth"].port, headers, body, function(err, result) {
+
+        let response_token = await http_factory.post(config["geepy-cloud-no-auth"].hostname, config["geepy-cloud-no-auth"].path, config["geepy-cloud-no-auth"].port, headers, body);
+        let securityToken =  JSON.parse(response_token);
         let headers_package= {
             'Content-Type': 'application/json',
             'Authorization': "Bearer "+securityToken.access_token
         }
         let package_parse = normalizePackage(package);
-        await http_factory.post(config["geepy-cloud-auth"].hostname, config["geepy-cloud-auth"].path, config["geepy-cloud-auth"].port, headers_package, package_parse,  function(err, result_geo) {
-            if (err) {
-                console.log(err);
-                return err
-            }else{
-                console.log(result_geo);
-            }
-            return result_geo
-        });
-    });
+
+        console.log(package_parse);
+
+        let response_send = await http_factory.post(config["geepy-cloud-auth"].hostname, config["geepy-cloud-auth"].path, config["geepy-cloud-auth"].port, headers_package, package_parse);
+
+        console.log(response_send);
+
+        return response_send;
+    //});
 }
 
 function normalizePackage(package){
+    console.log("app.services.deviceIotService.normalizePackage");
+    console.log(package);
+    let package_to_send = {};
+    package_to_send.sat = 0;
+    package_to_send.alt = 0;
+	package_to_send.dist = 0;
+	package_to_send.spd = 0;
+    package_to_send.bat = 0;
+    package_to_send.protocol = 0;
+    package_to_send.event = 1;
+	package_to_send.data = {};
+
+
     if(package.imei != undefined){
-        package.IMEI = parseInt(package.imei);
-        delete package.imei;
+        package_to_send.IMEI = parseInt(package.imei);
     }else if(package.id!= undefined){
         if(package.id.imei!= undefined){
-            package.IMEI = parseInt(package.imei);
-            delete package.id.imei;
+            package_to_send.IMEI = parseInt(package.id.imei);
         }
         if(package.id.trTS!= undefined){
-            package.ts = parseInt(package.trTS);
-            delete package.id.trTS;
+            package_to_send.ts = parseInt(package.id.trTS);
         }
         delete package.id;
     }
     if(package.timestamp != undefined){
-        package.ts = parseInt(package.timestamp);
-        delete package.timestamp;
+        package_to_send.ts = parseInt(package.timestamp);
     }
+
     if(package.latitude != undefined){
-        package.lat = parseFloat(package.latitude);
-        delete package.latitude;
+        package_to_send.lat = parseFloat(package.latitude);
+    }else if(package.trLat != undefined){
+        package_to_send.lat = parseFloat(package.trLat);
     }
+
     if(package.longitude != undefined){
-        package.long = parseFloat(package.longitude);
-        delete package.longitude;
+        package_to_send.long = parseFloat(package.longitude);
+    }else if(package.trLong != undefined){
+        package_to_send.long = parseFloat(package.trLat);
     }
-    package.sat = 0;
-    package.alt = 0;
-	package.dist = 0;
-	package.spd = 0;
-    package.bat = 0;
-    package.protocol = 0;
-    package.event = 1;
-	package.data = {};
+
+    if(package.altitude != undefined){
+        package_to_send.alt = parseFloat(package.altitude);
+    }else if(package.trAlt != undefined){
+        package_to_send.alt = parseFloat(package.trAlt);
+    }
+
+    if(package.satelital!= undefined){
+        package_to_send.sat = parseFloat(package.satelital);
+    }else if(package.trSat != undefined){
+        package_to_send.sat = parseFloat(package.trSat);
+    }
+
+    // datos de campo data
     if(package.batt_volt != undefined){
-        package.data.batt_volt = package.batt_volt;
-        delete package.batt_volt;
+        package_to_send.data.batt_volt = package.batt_volt;
     }
     if(package.current != undefined){
-        package.data.current = package.current;
-        delete package.current;
+        package_to_send.data.current = package.current;
     }
     if(package.capacity != undefined){
-        package.data.capacity = package.capacity;
-        delete package.capacity;
+        package_to_send.data.capacity = package.capacity;
     }
     if(package.device_ID != undefined){
-        package.data.device_ID = package.device_ID;
-        delete package.device_ID;
+        package_to_send.data.device_ID = package.device_ID;
     }
     
-    return package;
+    return package_to_send;
 }
 
 exports.startHeartBeat = async () => {

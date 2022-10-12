@@ -11,18 +11,19 @@ exports.proccessUDPMessage = async(message, rinfo) => {
 
     message_parser = JSON.parse(message);
     let numberKeys = Object.keys(message_parser).length;
+    console.log(numberKeys);
     // verifica si tiene solo una clave y si es imei
-    if(message_parser.imei != undefined){
-        await deviceIotService.updateIpByImei(message_parser.imei, rinfo.address, async (err, result) =>{
+    if(message_parser.imei != undefined || message_parser.id.imei != undefined){
+        await deviceIotService.updateIpByImei(message_parser.imei ? message_parser.imei : message_parser.id.imei, rinfo.address, async (err, result) =>{
             if (err) {
                 console.log(err);
                 return err
             }
-            else if(numberKeys > 1){
+            if(numberKeys > 1){
                 await deviceIotService.sendToGeepyCloudAPI(message_parser);
             }
             
-            return result
+            return true;
         });
     }
     // verifica si tiene mas de una clave
