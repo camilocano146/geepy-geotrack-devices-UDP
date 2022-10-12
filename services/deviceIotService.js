@@ -107,7 +107,7 @@ function normalizePackage(package){
     if(package.longitude != undefined){
         package_to_send.long = parseFloat(package.longitude);
     }else if(package.trLong != undefined){
-        package_to_send.long = parseFloat(package.trLat);
+        package_to_send.long = parseFloat(package.trLong);
     }
 
     if(package.altitude != undefined){
