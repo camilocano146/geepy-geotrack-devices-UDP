@@ -59,8 +59,6 @@ exports.sendToGeepyCloudAPI= async (package) => {
         }
         let package_parse = normalizePackage(package);
 
-        console.log(package_parse);
-
         let response_send = await http_factory.post(config["geepy-cloud-auth"].hostname, config["geepy-cloud-auth"].path, config["geepy-cloud-auth"].port, headers_package, package_parse);
 
         console.log(response_send);
@@ -68,10 +66,9 @@ exports.sendToGeepyCloudAPI= async (package) => {
         return response_send;
     //});
 }
-
+s
 function normalizePackage(package){
     console.log("app.services.deviceIotService.normalizePackage");
-    console.log(package);
     let package_to_send = {};
     package_to_send.sat = 0;
     package_to_send.alt = 0;
@@ -81,7 +78,6 @@ function normalizePackage(package){
     package_to_send.protocol = 0;
     package_to_send.event = 1;
 	package_to_send.data = {};
-
 
     if(package.imei != undefined){
         package_to_send.IMEI = parseInt(package.imei);

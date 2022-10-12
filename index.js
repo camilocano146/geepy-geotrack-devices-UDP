@@ -89,7 +89,7 @@ server.listen(port, async function() {
 	console.log("-----------start server.listen-----------");
     console.log('Server API HTTP listening in: ' + port);
 	console.log("-----------end server.listen-----------\n");
-	//deviceIotService.startHeartBeat();
+	deviceIotService.startHeartBeat();
 });
 
 
