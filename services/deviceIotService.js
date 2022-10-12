@@ -66,7 +66,7 @@ exports.sendToGeepyCloudAPI= async (package) => {
         return response_send;
     //});
 }
-s
+
 function normalizePackage(package){
     console.log("app.services.deviceIotService.normalizePackage");
     let package_to_send = {};
